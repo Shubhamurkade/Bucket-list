@@ -6,27 +6,31 @@
     android:orientation="vertical"
     tools:context=".Fragments.AddVicinityFragment">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/reminder_text_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/reminder_text_enter"
-        android:gravity="center"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/reminder_text_et"
+        android:hint="Enter a text for the reminder"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:id="@+id/reminder_number_et"/>
+        android:id="@+id/reminder_number_et"
+        android:hint="Enter a phone number to be reminded on"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_vicinity_next_bt"
-        android:onClick="onNextClick"/>
+        android:id="@+id/next_bt"/>
 
 </LinearLayout>

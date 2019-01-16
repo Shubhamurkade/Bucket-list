@@ -23,6 +23,8 @@ public class SelectLocationFragment extends Fragment {
 
     private WebView webViewMap;
     private OnFragmentInteractionListener mListener;
+    private String reminderText;
+    private int reminderPhoneNumber;
 
     public SelectLocationFragment() {
         // Required empty public constructor
@@ -34,6 +36,10 @@ public class SelectLocationFragment extends Fragment {
         return fragment;
     }
 
+    public void setFragmentFields(String reminderText, int reminderPhone){
+        reminderText = reminderText;
+        reminderPhoneNumber = reminderPhone;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -3,18 +3,25 @@ package com.example.mshack.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mshack.R;
 
 public class AddVicinityFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private
+    private EditText reminderEditText;
+    private EditText reminderPhoneNumber;
+    private Button nextButton;
 
     public AddVicinityFragment() {
         // Required empty public constructor
@@ -32,7 +39,6 @@ public class AddVicinityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -41,6 +47,22 @@ public class AddVicinityFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_vicinity, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        reminderEditText = view.findViewById(R.id.reminder_text_et);
+        reminderPhoneNumber = view.findViewById(R.id.reminder_number_et);
+        nextButton = view.findViewById(R.id.next_bt);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextClick(v);
+            }
+        });
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -81,12 +103,22 @@ public class AddVicinityFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void onNextClick(View view){
-        if()
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        Fragment mapFragment = new SelectLocationFragment();
-        transaction.replace(R.id.frament_view, mapFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public void onNextClick(View view){
+        String reminderText = reminderEditText.getText().toString();
+        String reminderNumber = reminderPhoneNumber.getText().toString();
+        if(reminderNumber.matches("") || reminderNumber.matches("")){
+            Toast toast = Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else {
+            int reminderPhoneNumber = Integer.parseInt(reminderNumber);
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            Fragment mapFragment = new SelectLocationFragment();
+            ((SelectLocationFragment) mapFragment).setFragmentFields(reminderText, reminderPhoneNumber);
+            transaction.replace(R.id.frament_view, mapFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
     }
 }
