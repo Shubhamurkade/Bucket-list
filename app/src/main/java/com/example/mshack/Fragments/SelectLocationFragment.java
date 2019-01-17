@@ -8,20 +8,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-
 import com.example.mshack.R;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-
+import com.mmi.MapView;
+import com.mmi.MapmyIndiaMapView;
+import com.mmi.events.MapListener;
+import com.mmi.events.ScrollEvent;
+import com.mmi.events.ZoomEvent;
+import com.mmi.util.GeoPoint;
 
 public class SelectLocationFragment extends Fragment {
 
 
-    private WebView webViewMap;
+    //private WebView webViewMap;
+    private MapView mapView;
     private OnFragmentInteractionListener mListener;
     private String reminderText;
     private int reminderPhoneNumber;
@@ -49,51 +48,35 @@ public class SelectLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_select_location, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_location, container, false);
+        mapView = ((MapmyIndiaMapView) view.findViewById(R.id.mapView)).getMapView();
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-        webViewMap = view.findViewById(R.id.webview_map);
-        webViewMap.getSettings().setJavaScriptEnabled(true);
+        //webViewMap = view.findViewById(R.id.webview_map);
+        //webViewMap.getSettings().setJavaScriptEnabled(true);
+        mapView.setMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent scrollEvent) {
+                return false;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent zoomEvent) {
+                return false;
+            }
+        });
+
+        GeoPoint geoPoint = new GeoPoint(48.8583, 22.944);
+        mapView.setCenter(geoPoint);
     }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        evaluateJsCodeMap();
-    }
-
-    private boolean evaluateJsCodeMap(){
-
-        File jsCode = new File("mapJs.html");
-        byte [] data = null;
-        try{
-            FileInputStream inputStream = new FileInputStream(jsCode);
-            data = new byte[(int)jsCode.length()];
-            inputStream.read(data);
-            inputStream.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        try{
-            String jsCodeString = new String(data, "UTF-8");
-            webViewMap.loadUrl(jsCodeString);
-        }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return true;
     }
 
     @Override
