@@ -5,18 +5,41 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import com.example.mshack.R;
 import com.mmi.MapView;
 import com.mmi.MapmyIndiaMapView;
 import com.mmi.events.MapListener;
 import com.mmi.events.ScrollEvent;
 import com.mmi.events.ZoomEvent;
-import com.mmi.util.GeoPoint;
+import com.mmi.layers.UserLocationOverlay;
+import com.mmi.layers.location.GpsLocationProvider;
+import com.mmi.services.account.MapmyIndiaAccountManager;
+import com.mmi.services.api.Place;
+import com.mmi.services.api.PlaceResponse;
+import com.mmi.services.api.ServicesException;
+import com.mmi.services.api.autosuggest.MapmyIndiaAutosuggest;
+import com.mmi.services.api.autosuggest.model.AutoSuggestAtlasResponse;
+import com.mmi.services.api.autosuggest.model.ELocation;
+import com.mmi.services.api.eloc.MapmyIndiaELoc;
 
-public class SelectLocationFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
+public class SelectLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     //private WebView webViewMap;
@@ -24,6 +47,9 @@ public class SelectLocationFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String reminderText;
     private int reminderPhoneNumber;
+    private Spinner resultsSpinner;
+    private ELocation elocSelected;
+    List<ELocation> locs;
 
     public SelectLocationFragment() {
         // Required empty public constructor
@@ -69,9 +95,57 @@ public class SelectLocationFragment extends Fragment {
             }
         });
 
-        GeoPoint geoPoint = new GeoPoint(48.8583, 22.944);
-        mapView.setCenter(geoPoint);
+        UserLocationOverlay mLocationOverlay;
+        mLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(getContext()), mapView);
+        mLocationOverlay.enableMyLocation();
+        mLocationOverlay.setCurrentLocationResId(R.drawable.ic_launcher);
+        mapView.getOverlays().add(mLocationOverlay);
+        mapView.invalidate();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getSuggestions();
+    }
+
+    private void getSuggestions(){
+        MapmyIndiaAccountManager test = MapmyIndiaAccountManager.getInstance();
+        try{
+            new MapmyIndiaAutosuggest.Builder<>()
+                    .setBridge(false)
+                    .setLocation(28,77)
+                    .setQuery("mmi000")
+                    .build()
+                    .enqueueCall(new Callback<AutoSuggestAtlasResponse>() {
+                        @Override
+                        public void onResponse(Call<AutoSuggestAtlasResponse> call, Response<AutoSuggestAtlasResponse> response) {
+                            locs = response.body().getSuggestedLocations();
+
+                            Iterator<ELocation> it = locs.iterator();
+
+                            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
+                            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            resultsSpinner.setAdapter(spinnerAdapter);
+
+                            while(it.hasNext())
+                            {
+
+                                spinnerAdapter.add(it.next().placeName);
+                                spinnerAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<AutoSuggestAtlasResponse> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+        }
+        catch (Exception e) {
+        e.printStackTrace();
+        }
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -96,6 +170,15 @@ public class SelectLocationFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        elocSelected = locs.get(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 
     public interface OnFragmentInteractionListener {
