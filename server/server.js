@@ -62,5 +62,5 @@ app.get('*', (req, res) => {
 });
 
 const server = http.createServer(app);
-
+server = require('./app');
 server.listen(appPort, () => console.log('Running SettleBills on localhost:' + appPort));
