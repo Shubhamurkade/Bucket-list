@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+var http = require('http');
 const app = express();
 const config = require('./config.json');
 
@@ -16,9 +17,9 @@ const appPort = config.app_port || '3000';
 var uri = '';
 
 if(dbUsername!=='' && dbPassword!==''){
-    uri = 'mongodb://' +dbUsername+ ':' +dbPassword+ '@' +dbUrl+ ':' +dbPort+ '/settlebills';    
+    uri = 'mongodb://' +dbUsername+ ':' +dbPassword+ '@' +dbUrl+ ':' +dbPort+ '/mshack?ssl=true';    
 } else {
-    uri = 'mongodb://' +dbUrl+ ':' +dbPort+ '/settlebills';
+    uri = 'mongodb://' +dbUrl+ ':' +dbPort+ '/mshack?ssl=true';
 }
 console.log("Establishing MongoDB Connection");
 mongoose.connect(uri, { useNewUrlParser: true });
@@ -56,11 +57,12 @@ app.use(function(req, res, next) {
 // API location
 app.use('/api', api);
 
-// Send all other requests to the Angular app
+// Send 404 for all other requests
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
+    res.status(404);
+    res.send('');
 });
 
 const server = http.createServer(app);
-server = require('./app');
-server.listen(appPort, () => console.log('Running SettleBills on localhost:' + appPort));
+
+server.listen(appPort, () => console.log('Running BucketList on localhost:' + appPort));
