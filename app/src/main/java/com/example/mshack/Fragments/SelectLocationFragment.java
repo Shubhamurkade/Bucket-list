@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.example.mshack.R;
@@ -42,12 +45,21 @@ import retrofit2.Response;
 public class SelectLocationFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
-    //private WebView webViewMap;
+    private class mapFields{
+        public EditText placeEditText;
+        public Button searchButton;
+        public ScrollView scrollView;
+    }
+
+    private class userData{
+        public String responseText;
+        public int distance;
+    }
+
+    private userData userDataInstance;
+    private mapFields mapFieldsInstance;
     private MapView mapView;
     private OnFragmentInteractionListener mListener;
-    private String reminderText;
-    private int reminderPhoneNumber;
-    private Spinner resultsSpinner;
     private ELocation elocSelected;
     List<ELocation> locs;
 
@@ -61,9 +73,10 @@ public class SelectLocationFragment extends Fragment implements AdapterView.OnIt
         return fragment;
     }
 
-    public void setFragmentFields(String reminderText, int reminderPhone){
-        reminderText = reminderText;
-        reminderPhoneNumber = reminderPhone;
+    public void setFragmentFields(String reminderText, int distance){
+        userDataInstance = new userData();
+        userDataInstance.responseText = reminderText;
+        userDataInstance.distance= distance;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,11 +114,15 @@ public class SelectLocationFragment extends Fragment implements AdapterView.OnIt
         mLocationOverlay.setCurrentLocationResId(R.drawable.ic_launcher);
         mapView.getOverlays().add(mLocationOverlay);
         mapView.invalidate();
+
+        mapFieldsInstance = new mapFields();
+        mapFieldsInstance.placeEditText = view.findViewById(R.id.search_et);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
         getSuggestions();
     }
 
