@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -31,33 +35,7 @@ public final class NetworkUtils {
     final static String QUERY_PARAM = "api_key";
     final static String API_KEY = "INSERT-YOUR-KEY";
 
-
-    public static String buildUrlForOAuth(){
-        /*try{
-            URL url = new URL("https://outpost.mapmyindia.com/api/security/oauth/token");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            String params = "grant_type=client_credentials&client_id=4Ffs0QpXpGqHilHwZ4cX-JuUUOyHbvkCydim8e231I4=&client_secret=BRt6beAlmOf6h2jm3JfkTWEE_DRsIBWJlmbkc2pxjrQZFuf7cm7-5Q==";
-            String encodedData = URLEncoder.encode(params, "UTF-8");
-            conn.setDoOutput(true);
-            conn.setInstanceFollowRedirects(false);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setRequestProperty("Content-Length", Integer.toString(encodedData.getBytes(StandardCharsets.UTF_8).length));
-              DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.write(encodedData.getBytes(StandardCharsets.UTF_8));
-
-            String response = conn.getResponseMessage();
-            Log.i("REQ:", encodedData);
-            Log.i("RESP:", response);
-
-            return response;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }*/
-
+    public static String buildUrlForOAuth(String searchText){
         try {
             OkHttpClient client = new OkHttpClient();
             RequestBody formBody = new FormBody.Builder()
@@ -70,11 +48,52 @@ public final class NetworkUtils {
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful())
                 throw new IOException("Unexpected code " + response);
-            Log.i("RESP", response.body().string());
+            //Log.i("RESP", response.body().string());
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            OAuthResp oAuthResp = mapper.readValue(response.body().string(), OAuthResp.class);
+            //Log.i("search text:", searchText);
+            OkHttpClient client2 = new OkHttpClient();
+            HttpUrl.Builder urlBuilder = HttpUrl.parse("https://atlas.mapmyindia.com/api/places/search/json").newBuilder();
+            urlBuilder.addQueryParameter("query", searchText);
+            String url = urlBuilder.build().toString();
+            Request request2 = new Request.Builder()
+                    .header("Authorization", oAuthResp.getToken_type() + " " + oAuthResp.getAccess_token())
+                    .url(url)
+                    .build();
+            Response response2 = client2.newCall(request2).execute();
+            if (!response.isSuccessful())
+                throw new IOException("Unexpected code " + response2);
+            Log.i("RESP2:", response2.body().string());
         } catch(Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class OAuthResp {
+
+        private String access_token;
+
+        private String token_type;
+
+        public String getAccess_token() {
+            return access_token;
+        }
+
+        public void setAccess_token(String access_token) {
+            this.access_token = access_token;
+        }
+
+        public String getToken_type() {
+            return token_type;
+        }
+
+        public void setToken_type(String token_type) {
+            this.token_type = token_type;
+        }
     }
     public static URL buildUrl(String sortBy) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
