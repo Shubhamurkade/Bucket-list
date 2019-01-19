@@ -10,7 +10,7 @@ public class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {
         try {
-            return NetworkUtils.buildUrlForOAuth();
+            return NetworkUtils.buildUrlForOAuth(urls[0]);
 
         } catch (Exception e) {
             this.exception = e;

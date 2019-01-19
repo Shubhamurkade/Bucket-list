@@ -137,7 +137,9 @@ public class SelectLocationFragment extends Fragment implements AdapterView.OnIt
         mapFieldsInstance.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new HttpAsyncTask().execute("");
+                String [] searchText = new String[1];
+                searchText[0] = mapFieldsInstance.placeEditText.getText().toString();
+                new HttpAsyncTask().execute(searchText);
             }
         });
         getSuggestions();
