@@ -32,5 +32,9 @@
         android:layout_height="wrap_content"
         android:text="@string/add_vicinity_next_bt"
         android:id="@+id/next_bt"/>
+    <SeekBar
+        android:id="@+id/distance_sb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
