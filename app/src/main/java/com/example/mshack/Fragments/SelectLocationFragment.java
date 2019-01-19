@@ -98,7 +98,7 @@ public class SelectLocationFragment extends Fragment implements AdapterView.OnIt
         UserLocationOverlay mLocationOverlay;
         mLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(getContext()), mapView);
         mLocationOverlay.enableMyLocation();
-        mLocationOverlay.setCurrentLocationResId(R.drawable.ic_launcher);
+        //mLocationOverlay.setCurrentLocationResId(R.drawable.ic_launcher);
         mapView.getOverlays().add(mLocationOverlay);
         mapView.invalidate();
     }
