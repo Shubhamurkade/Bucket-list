@@ -24,6 +24,7 @@ public class AddVicinityFragment extends Fragment {
     private Button nextButton;
     private SeekBar seekDistanceBar;
     private int distanceSelected;
+    private EditText reminderTitleText;
 
     public AddVicinityFragment() {
         // Required empty public constructor
@@ -54,6 +55,7 @@ public class AddVicinityFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         reminderEditText = view.findViewById(R.id.reminder_text_et);
+        reminderTitleText = view.findViewById(R.id.reminder_title_et);
         nextButton = view.findViewById(R.id.next_bt);
         seekDistanceBar = view.findViewById(R.id.distance_sb);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +112,7 @@ public class AddVicinityFragment extends Fragment {
 
     public void onNextClick(View view){
         String reminderText = reminderEditText.getText().toString();
+        String reminderTitle = reminderTitleText.getText().toString();
         if(reminderText.matches("")){
             Toast toast = Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_LONG);
             toast.show();
@@ -117,7 +120,7 @@ public class AddVicinityFragment extends Fragment {
         else {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             Fragment mapFragment = new SelectLocationFragment();
-            //((SelectLocationFragment) mapFragment).setFragmentFields(reminderText, distanceSelected);
+            ((SelectLocationFragment) mapFragment).setFragmentFields(reminderTitle, reminderText, distanceSelected);
             transaction.replace(R.id.frament_view, mapFragment);
             transaction.addToBackStack(null);
             transaction.commit();

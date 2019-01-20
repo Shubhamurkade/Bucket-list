@@ -18,15 +18,17 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/reminder_text_et"
-        android:hint="Enter a text for the reminder"
+        android:id="@+id/reminder_title_et"
+        android:hint="Enter a title for the reminder"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:id="@+id/reminder_number_et"
-        android:hint="Enter a phone number to be reminded on"/>
+        android:id="@+id/reminder_text_et"
+        android:hint="Enter a text for the reminder"
+        />
+
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

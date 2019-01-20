@@ -1,24 +1,17 @@
 package com.example.mshack;
 
-//import android.net.http.RequestQueue;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import com.example.mshack.dummy.ReminderItemContent;
-import com.example.mshack.dummy.ReminderItemContent.ReminderItem;
+import com.example.mshack.Utillities.ReminderNetworkUtils;
 
-import com.android.volley.toolbox.Volley;
-import com.android.volley.Request;
-import android.net.http.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class listOfRemindersActivity extends AppCompatActivity{
@@ -26,6 +19,7 @@ public class listOfRemindersActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private List<ReminderNetworkUtils.ReminderListResp.Remainder> reminders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,61 +29,38 @@ public class listOfRemindersActivity extends AppCompatActivity{
 
         mRecyclerView = (RecyclerView) findViewById(R.id.LORRecyclerView);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+// use this setting to improve performance if you know that changes
+// in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
-        // use a linear layout manager
+// use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
-        //String[] mDataset = {"1","2","3"};
-        List<ReminderItem> reminders = new ArrayList<ReminderItem>();
-        reminders.add(new ReminderItem("0", "100", "120", "Koramangala", "2000",
-                "Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-        /*reminders.add(new ReminderItem("1", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-        reminders.add(new ReminderItem("2", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-        reminders.add(new ReminderItem("3", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-        reminders.add(new ReminderItem("4", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-        */
-        //reminders = GetRemindersFromServer();
+        startService(new Intent(this.getApplicationContext(), LocationService.class));
 
+//reminders.add(new ReminderItem("1", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
 
-        //LORReminderListFragment.OnListFragmentInteractionListener mListener;
-        mAdapter = new LORReminderListRecyclerViewAdapter(reminders);
+        String username = "Nishanth";
+        List<ReminderNetworkUtils.ReminderListResp.Remainder> reminders = Collections.emptyList();
+        try {
+            reminders = new ReminderAsyncTask().execute(username).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        mAdapter = new LORReminderListRecyclerViewAdapter(reminders, getBaseContext());
         mRecyclerView.setAdapter(mAdapter);
     }
-    /*
-    List<ReminderItem> GetRemindersFromServer()
-    {
-// Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://www.google.com";
 
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        //mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
-            }
-        });
+    public void fabClick(View view) {
+        Intent myIntent = new Intent(listOfRemindersActivity.this, LoadTextActivity.class);
+        listOfRemindersActivity.this.startActivity(myIntent);
+    }
 
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-        List<ReminderItem> reminders = new ArrayList<ReminderItem>();
-        reminders.add(new ReminderItem("0", "100", "120", "Koramangala", "2000",
-                "Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
-
-        return  reminders;
-    }*/
+    public void showPinsClick(View view){
+        Intent myIntent = new Intent(this, ShowPinsActivity.class);
+        listOfRemindersActivity.this.startActivity(myIntent);
+    }
 
 }
