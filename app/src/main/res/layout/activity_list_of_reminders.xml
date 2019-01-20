@@ -53,7 +53,7 @@
         android:id="@+id/showPins_bt"
         android:onClick="showPinsClick"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="80dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/LORRecyclerView"

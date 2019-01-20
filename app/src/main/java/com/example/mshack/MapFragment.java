@@ -135,4 +135,6 @@ public class MapFragment extends Fragment {
     this.reminderText = reminderText;
     this.reminderTitle = reminderTitle;
     }
+
+
 }
