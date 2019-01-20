@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddRemainderRequest {
 
+    @JsonProperty("_id")
+    private int id;
+
     private String latitude;
 
     private String longitude;
@@ -20,6 +23,9 @@ public class AddRemainderRequest {
     private String text;
 
     private String place;
+    public int getId() { return id;}
+
+    public void setId(int id) { this.id = id; }
 
     public String getLatitude() {
         return latitude;

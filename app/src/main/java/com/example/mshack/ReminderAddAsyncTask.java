@@ -16,6 +16,7 @@ public class ReminderAddAsyncTask extends AsyncTask<String, Void, Void> {
         try {
             String access_token = ReminderNetworkUtils.getJWTToken(username[0]);
             AddRemainderRequest addRemainderRequest = new AddRemainderRequest();
+            addRemainderRequest.setId((int)System.currentTimeMillis()/1000);
             addRemainderRequest.setText(username[1]);
             addRemainderRequest.setTitle(username[2]);
             addRemainderRequest.setLatitude(username[3]);

@@ -37,6 +37,8 @@ public class listOfRemindersActivity extends AppCompatActivity{
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        startService(new Intent(this.getApplicationContext(), LocationService.class));
+
 //reminders.add(new ReminderItem("1", "100", "120", "Koramangala", "2000","Ice Cream", "Remember to Eat ice cream in Corner house", "2019_01_19"));
 
         String username = "Nishanth";
