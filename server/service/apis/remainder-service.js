@@ -30,6 +30,9 @@ var remainderSchema = mongoose.Schema({
         type: String,
         default: ' ',
         required: true 
+    },
+    _id: {
+        required: true
     }
 },
 {
