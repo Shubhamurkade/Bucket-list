@@ -4,11 +4,11 @@ import android.os.AsyncTask;
 
 import com.example.mshack.Utillities.NetworkUtils;
 
-public class HttpAsyncTask extends AsyncTask<String, Void, String> {
+public class HttpAsyncTask extends AsyncTask<String, Void, NetworkUtils.AutoSuggestResp> {
 
     private Exception exception;
 
-    protected String doInBackground(String... urls) {
+    protected NetworkUtils.AutoSuggestResp doInBackground(String... urls) {
         try {
             return NetworkUtils.buildUrlForOAuth(urls[0]);
 
@@ -19,8 +19,11 @@ public class HttpAsyncTask extends AsyncTask<String, Void, String> {
         }
     }
 
-    protected void onPostExecute(String feed) {
+    protected void onPostExecute(NetworkUtils.AutoSuggestResp resp) {
         // TODO: check this.exception
         // TODO: do something with the feed
+
     }
+
+
 }

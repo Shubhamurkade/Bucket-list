@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
 
 import okhttp3.FormBody;
@@ -30,12 +31,9 @@ import okhttp3.Response;
  */
 public final class NetworkUtils {
 
-    private static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String BASE_URL = "https://api.themoviedb.org/3/movie";
-    final static String QUERY_PARAM = "api_key";
-    final static String API_KEY = "INSERT-YOUR-KEY";
 
-    public static String buildUrlForOAuth(String searchText){
+
+    public static AutoSuggestResp buildUrlForOAuth(String searchText){
         try {
             OkHttpClient client = new OkHttpClient();
             RequestBody formBody = new FormBody.Builder()
@@ -53,7 +51,7 @@ public final class NetworkUtils {
 
             ObjectMapper mapper = new ObjectMapper();
             OAuthResp oAuthResp = mapper.readValue(response.body().string(), OAuthResp.class);
-            //Log.i("search text:", searchText);
+            Log.i("oauth token:", oAuthResp.access_token);
             OkHttpClient client2 = new OkHttpClient();
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://atlas.mapmyindia.com/api/places/search/json").newBuilder();
             urlBuilder.addQueryParameter("query", searchText);
@@ -63,9 +61,8 @@ public final class NetworkUtils {
                     .url(url)
                     .build();
             Response response2 = client2.newCall(request2).execute();
-            if (!response.isSuccessful())
-                throw new IOException("Unexpected code " + response2);
-            Log.i("RESP2:", response2.body().string());
+            return mapper.readValue(response2.body().string(), AutoSuggestResp.class);
+            //Log.i("RESP2", arr.getSuggestedLocations().get(0).getPlaceAddress());
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -95,59 +92,50 @@ public final class NetworkUtils {
             this.token_type = token_type;
         }
     }
-    public static URL buildUrl(String sortBy) {
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(sortBy)
-                .appendQueryParameter(QUERY_PARAM, API_KEY)
-                .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class AutoSuggestResp {
+
+        private List<Places> suggestedLocations;
+
+        public List<Places> getSuggestedLocations() {
+            return suggestedLocations;
         }
 
-        Log.v(TAG, "Built URI " + url);
-
-        return url;
-    }
-
-    public static URL buildUrlForTrailersAndReviews(String movieId, String reviewOrVideo) {
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(movieId)
-                .appendPath(reviewOrVideo)
-                .appendQueryParameter(QUERY_PARAM, API_KEY)
-                .build();
-
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        public void setSuggestedLocations(List<Places> suggestedLocations) {
+            this.suggestedLocations = suggestedLocations;
         }
 
-        Log.v(TAG, "Built URI " + url);
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Places {
+            private String placeAddress;
 
-        return url;
-    }
+            private String placeName;
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+            private String latitude;
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
+            private String longitude;
 
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
+            public String getPlaceAddress() {
+                return placeAddress;
             }
-        } finally {
-            urlConnection.disconnect();
+
+            public String getLongitude(){return longitude;}
+
+            public String getLatitude(){return latitude;}
+
+            public void setPlaceAddress(String placeAddress) {
+                this.placeAddress = placeAddress;
+            }
+
+            public String getPlaceName() {
+                return placeName;
+            }
+
+            public void setPlaceName(String placeName) {
+                this.placeName = placeName;
+            }
         }
+
     }
 }
