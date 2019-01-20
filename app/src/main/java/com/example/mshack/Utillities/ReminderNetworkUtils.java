@@ -88,7 +88,8 @@ public final class ReminderNetworkUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             OkHttpClient client = new OkHttpClient();
-            RequestBody body = RequestBody.create( MediaType.parse("application/json; charset=utf-8"), mapper.writeValueAsString(rem));
+            String content = mapper.writeValueAsString(rem);
+            RequestBody body = RequestBody.create( MediaType.parse("application/json; charset=utf-8"), content);
             Request request = new Request.Builder().header("x-access-token", access_token).url("http://23.101.138.79/api/remainder")
                     .post(body).build();
             Response response = client.newCall(request).execute();

@@ -1,6 +1,7 @@
 package com.example.mshack;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -94,6 +95,9 @@ public class MapFragment extends Fragment {
 
 
                 new ReminderAddAsyncTask().execute("Nishanth", reminderTitle, reminderText, lat, longi, placeName, Integer.toString(distance));
+
+                Intent intent = new Intent(getContext(), listOfRemindersActivity.class);
+                startActivity(intent);
             }
         });
         //mapView = view.findViewById(R.id.mapView);
@@ -118,6 +122,9 @@ public class MapFragment extends Fragment {
         GeoPoint geoPoint = new GeoPoint(Double.parseDouble(lat), Double.parseDouble(longi));
         marker.setPosition(geoPoint);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+        GeoPoint geoPointCenter = new GeoPoint(18.67 , 74.8849);
+        mapView.setCenter(geoPointCenter);
         mapView.getOverlays().add(marker);
         mapView.invalidate();
     }

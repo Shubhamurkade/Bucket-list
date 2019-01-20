@@ -19,4 +19,5 @@
     <string name="place_to_search">Place to search</string>
     <string name="button">Button</string>
     <string name="enter_search_location">Enter search location</string>
+    <string name="show_pins">Show Pins</string>
 </resources>

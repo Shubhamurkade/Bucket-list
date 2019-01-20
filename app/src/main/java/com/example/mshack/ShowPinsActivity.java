@@ -53,6 +53,9 @@ public class ShowPinsActivity extends AppCompatActivity {
             marker.setDescription(curr.getTitle());
             marker.setInfoWindow(infoWindow);
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+            GeoPoint geoPointCenter = new GeoPoint(Double.parseDouble(curr.getLatitude()) +8 , Double.parseDouble(curr.getLongitude()) -3);
+            mapView.setCenter(geoPointCenter);
             mapView.getOverlays().add(marker);
             mapView.invalidate();
         }
