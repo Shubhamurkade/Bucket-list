@@ -30,16 +30,20 @@ var remainderSchema = mongoose.Schema({
         type: String,
         default: ' ',
         required: true 
+    },
+    _id: {
+        type: Number
     }
 },
 {
+  _id: false,
   timestamps: true
 });
 
 module.exports.getAll = function(user, callback) {
     var Remainder = mongoose.model('Remainder', remainderSchema, user);
     console.log("Quering MongoDB for Data");
-    Remainder.find({}, callback);
+    Remainder.find({}, callback).sort({createdAt: -1});
 }
 
 module.exports.getById = function(user, id, callback) {
