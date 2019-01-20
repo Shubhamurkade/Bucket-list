@@ -32,7 +32,7 @@ var remainderSchema = mongoose.Schema({
         required: true 
     },
     _id: {
-        required: true
+        type: Number
     }
 },
 {
