@@ -3,6 +3,6 @@
     "mongo_port": "10255",
     "mongo_username": "1ac50fa3-0ee0-4-231-b9ee",
     "mongo_password": "xljkIcsViCf5la1D4z5VWIRoxibdDGsJOqhdJpwzeA3kVWlgYhCiywHS5wb2QExa1WXyFNlQrSSymjc2gXOhkg==",
-    "app_port": "3000",
+    "app_port": "80",
     "secret": "MSHACK@123#456$789"
 }

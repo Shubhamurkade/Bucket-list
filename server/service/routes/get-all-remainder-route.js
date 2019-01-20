@@ -9,6 +9,6 @@ module.exports = function(req, res) {
             throw err;
         }
         console.log("Retrieve Data from MongoDB Successful");
-        res.json(remainders);
+        res.json({list: remainders});
     });
 }
